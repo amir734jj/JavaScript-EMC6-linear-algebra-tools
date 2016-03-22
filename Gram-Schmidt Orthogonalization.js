@@ -4,101 +4,83 @@
 
 "use strict";
 
+var tools = require("./tools.js");
+
 // performs Gram Schmidt orthogonalization on nXn vectors (or array of arrays)
-//var gs1 = new gram_schmidt([
+// var gs1 = new gram_schmidt([
 //    [2, 0],
 //    [4, 1]
-//], false);
+// ], false);
 //      ^
 // normalize flag. true => normalize, false => do not normalize
 
 class gram_schmidt {
-    constructor(matrix, normalize) {
-        if (normalize) {
-            this.normalize = normalize;
-        } else {
-            this.normalize = false
-        }
+	constructor(matrix, normalize) {
+		if (normalize) {
+			this.normalize = normalize;
+		} else {
+			this.normalize = false
+		}
 
-        var size_temporarily = matrix[0].length;
-        for (var index = 0; index < matrix.length; index++) {
-            if (size_temporarily !== matrix[index].length) {
-                throw "invalid matrix dimensions";
-            }
-        }
+		var size_temporarily = matrix[0].length;
+		for (var index = 0; index < matrix.length; index++) {
+			if (size_temporarily !== matrix[index].length) {
+				throw "invalid matrix dimensions";
+			}
+		}
 
-        this.matrix = matrix;
-        this.dimensions = size_temporarily;
+		this.matrix = matrix;
+		this.dimensions = size_temporarily;
 
-        this.calculate_orthogonal(matrix);
-    }
+		this.calculate_orthogonal(matrix);
+	}
 
-    calculate_orthogonal() {
-        for (var i = 1; i < this.dimensions; i++) {
-            var temp_vector = this.matrix[i]; // v2
-            for (var j = i - 1; j >= 0; j--) {
-                var dot_product1 = this.dot_product(temp_vector, this.matrix[j]);
-                var dot_product2 = this.dot_product(this.matrix[j], this.matrix[j]);
-                var dot_product = dot_product1 / dot_product2;
-                var to_subtract = this.multiply(dot_product, this.matrix[j]);
-                this.matrix[i] = this.subtract(temp_vector, to_subtract);
-            }
-            if (this.normalize) {
-                var normal = this.norm(temp_vector);
-                this.matrix[i] = this.multiply(1 / normal, temp_vector);
-            }
-        }
+	calculate_orthogonal() {
+		for (var i = 0; i < this.dimensions; i++) {
+			var temp_vector = this.matrix[i]; // starting from second vector
+			for (var j = 0; j < i; j++) {
+				var dot_product = tools.dot_product(temp_vector, this.matrix[j], this.dimensions);
+				var to_subtract = tools.multiply(dot_product, this.matrix[j], this.dimensions);
+				temp_vector = tools.subtract(temp_vector, to_subtract, this.dimensions);
+			}
+			if (this.normalize) {
+				var normal = tools.norm(temp_vector, this.dimensions);
+				this.matrix[i] = tools.multiply(1 / normal, temp_vector, this.dimensions);
+			}
+		}
 
-        return this.get_matrix();
-    }
+		this.validate_result();
+		return this.get_matrix();
+	}
 
-    get_matrix() {
-        return this.matrix;
-    }
+	get_matrix() {
+		return this.matrix;
+	}
 
-    subtract(vectorX, vectorY) {
-        var result = new Array(this.dimensions);
-        for (var i = 0; i < this.dimensions; i++) {
-            result[i] = vectorX[i] - vectorY[i];
-        }
-        return result;
-    }
-
-    multiply(scalarC, vectorX) {
-        var result = new Array(this.dimensions);
-        for (var i = 0; i < this.dimensions; i++) {
-            result[i] = scalarC * vectorX[i];
-        }
-        return result;
-    }
-
-    dot_product(vectorX, vectorY) {
-        var sum = 0;
-        for (var i = 0; i < this.dimensions; i++) {
-            sum += vectorX[i] * vectorY[i];
-        }
-        return sum;
-    }
-
-    norm(vector) {
-        return Math.sqrt(this.dot_product(vector, vector));
-    }
-
+	validate_result() {
+		for (var i = 0; i < this.dimensions - 1; i++) {
+			// small rounding error is acceptable (epsilon)
+			if (Math.abs(tools.dot_product(this.matrix[i], this.matrix[i + 1], this.dimensions)) <= 2.2204460492503131e-016) {
+				console.log("invalid orthogonalization result");
+				return false;
+			}
+		}
+		return true;
+	}
 }
 
-/*
-var gs1 = new gram_schmidt([
-    [2, 0],
-    [4, 1]
-], false);
 
-var gs2 = new gram_schmidt([
-    [2, 2],
-    [4, 1]
-], true);
+// var gs1 = new gram_schmidt([
+// 	[2, 0],
+// 	[4, 1]
+// ], false);
+//
+// var gs2 = new gram_schmidt([
+// 	[4, 5],
+// 	[6, 3]
+// ], true);
+// console.log(gs1.get_matrix());
+// console.log(gs2.get_matrix());
 
-console.log(gs1.get_matrix());
-console.log(gs2.get_matrix());
-*/
 
 module.exports = gram_schmidt;
