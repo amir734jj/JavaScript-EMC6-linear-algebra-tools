@@ -34,6 +34,17 @@ class tools {
     static norm(vector, n) {
         return Math.sqrt(this.dot_product(vector, vector, n));
     }
+	
+	// checks if two set of vectors are equal
+	static check_vectors_equality(matrixA, matrixB, n) {
+		for (var i = 0; i < n; i++) {
+            if (matrixA.indexOf(matrixB[i]) < 0) {
+				console.log("shit");
+				return false;
+			}
+        }
+		return true;
+	}
 
 }
 
