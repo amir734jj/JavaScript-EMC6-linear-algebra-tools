@@ -39,7 +39,6 @@ class tools {
     static check_vectors_equality(matrixA, matrixB, n) {
         for (var i = 0; i < n; i++) {
             if (matrixA.indexOf(matrixB[i]) < 0) {
-                console.log("shit");
                 return false;
             }
         }
