@@ -40,6 +40,7 @@ class LLL {
 			if (this.dot_product(this.matrix_after[k], this.matrix_after[k]) > ((this.delta - (this.mu(k, k - 1) * this.mu(k, k - 1))) * (this.dot_product(this.matrix_after[k - 1], this.matrix_after[k - 1])))) {
 				if (k + 1 >= this.dimensions) { // invariant: there is some issue, something is wrong
 					flag = true;
+					console.log("something bad happened ! (1)");
 				}
 				k++;
 				console.log("if");
@@ -53,6 +54,7 @@ class LLL {
 
 				if (k === Math.max(k - 1, 1) || k >= this.dimensions || Math.max(k - 1, 1) >= this.dimensions) { // invariant: there is some issue, something is wrong
 					flag = true;
+					console.log("something bad happened ! (2)");
 				}
 				k = Math.max(k - 1, 1);
 
@@ -63,11 +65,11 @@ class LLL {
 		}
 		while (k <= this.dimensions && !flag);
 
-		console.log("final: " + this.matrix_after);
+		console.log("final: ");
+		console.log(this.matrix_before);
 	}
 
 	mu(i, j) {
-
 		var top = this.dot_product(this.matrix_before[i], this.matrix_after[j]);
 		var bottom = this.dot_product(this.matrix_after[j], this.matrix_after[j]);
 
