@@ -57,6 +57,7 @@ class gram_schmidt {
 		return this.matrix;
 	}
 
+	// after Gram Schmidt orthogonalization, any two vectors are orthogonalization, then their dot product should be zero
 	validate_result() {
 		for (var i = 0; i < this.dimensions - 1; i++) {
 			// small rounding error is acceptable (epsilon)
