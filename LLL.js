@@ -8,7 +8,7 @@ var gs = require("./Gram-Schmidt Orthogonalization.js");
 
 class LLL {
 	constructor(matrix, delta) {
-		if (delta < 0.24 || delta > 1) {
+		if (delta < 0.25 || delta > 1) {
 			throw "delta is out of range";
 		}
 
@@ -18,57 +18,58 @@ class LLL {
 		this.dimensions = matrix[0].length;
 		this.calculate_LLL();
 	}
-
+	
+	// ** important
+	// 	{b} set of vectors are denoted by this.matrix_before
+	// 	{b*} set of vectors are denoted by this.matrix_after
 	calculate_LLL() {
-		this.matrix_after = new gs(this.matrix_before, false).matrix;
-		var flag = false;
-		//console.log(this.matrix_after);
+		this.matrix_after = new gs(this.matrix_before, false).matrix;	// initialize after vectors: perform Gram-Schmidt, but do not normalize
+		var flag = false;	// invariant
 		var k = 1;
 		do {
 			for (var j = k - 1; j >= 0; j--) {
-				console.log("before");
-				console.log(k + " " + j);
-
-				if (this.mu(k, j) > 0.5) {
+				if (Math.abs(this.mu(k, j)) > 0.5) {
 					var to_subtract = this.multiply(Math.round(this.mu(k, j)), this.matrix_before[j]);
 					this.matrix_before[k] = this.subtract(this.matrix_before[k], to_subtract);
 
-					this.matrix_after = new gs(this.matrix_before, false).matrix;
+					this.matrix_after = new gs(this.matrix_before, false).matrix;	// update after vectors: perform Gram-Schmidt, but do not normalize
 				}
 			}
 
-			if (this.dot_product(this.matrix_after[k], this.matrix_after[k]) > ((this.delta - (this.mu(k, k - 1) * this.mu(k, k - 1))) * (this.dot_product(this.matrix_after[k - 1], this.matrix_after[k - 1])))) {
+			if (this.dot_product(this.matrix_after[k], this.matrix_after[k]) >= (this.delta -  Math.pow(this.mu(k, k - 1), 2)) * this.dot_product(this.matrix_after[k - 1], this.matrix_after[k - 1])) {
 				if (k + 1 >= this.dimensions) { // invariant: there is some issue, something is wrong
-					flag = true;
+					flag = true;	// invariant is broken
 					console.log("something bad happened ! (1)");
 				}
+				
 				k++;
-				console.log("if");
-				console.log(k + " " + j);
+				console.log("if; k, j");
+				console.log(k + ", " + j);
 			} else {
-				var temp_matrix = this.matrix_after[k];
-				this.matrix_after[k] = this.matrix_after[k - 1];
-				this.matrix_after[k - 1] = temp_matrix;
+				var temp_matrix = this.matrix_before[k];
+				this.matrix_before[k] = this.matrix_before[k - 1];
+				this.matrix_before[k - 1] = temp_matrix;
 
-				this.matrix_after = new gs(this.matrix_before, false).matrix;
+				this.matrix_after = new gs(this.matrix_before, false).matrix;	// update after vectors: perform Gram-Schmidt, but do not normalize
 
 				if (k === Math.max(k - 1, 1) || k >= this.dimensions || Math.max(k - 1, 1) >= this.dimensions) { // invariant: there is some issue, something is wrong
-					flag = true;
+					flag = true;	// invariant is broken
 					console.log("something bad happened ! (2)");
 				}
 				k = Math.max(k - 1, 1);
 
-
-				console.log("else");
-				console.log(k + " " + j);
+				console.log("else; k, j");
+				console.log(k + ", " + j);
 			}
 		}
-		while (k <= this.dimensions && !flag);
+		while (k <= this.dimensions && !flag);	// I added this flag variable to prevent getting exceptions and terminate the loop gracefully
 
 		console.log("final: ");
 		console.log(this.matrix_before);
 	}
 
+	// calculated mu as been  mentioned on Wikipedia
+	// mu(i, j) = <b_i, b*_j> / <b*_j, b*_j>
 	mu(i, j) {
 		var top = this.dot_product(this.matrix_before[i], this.matrix_after[j]);
 		var bottom = this.dot_product(this.matrix_after[j], this.matrix_after[j]);
@@ -108,7 +109,6 @@ class LLL {
 */
 var lll = new LLL(
 	[
-		[1, 0, 2],
-		[1, 2, 3],
-		[4, 5, 6]
+		[2, 0],
+	    [4, 1]
 	], 3 / 4);
