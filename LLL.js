@@ -15,7 +15,7 @@ class LLL {
 
         this.matrix_before = matrix;
         this.matrix_after = null;
-		this.matrix_before_before = null;
+        this.matrix_before_before = null;
         this.delta = delta;
         this.dimensions = matrix[0].length;
         this.calculate_LLL();
@@ -28,14 +28,14 @@ class LLL {
         this.matrix_after = new gs(this.matrix_before, false).matrix; // initialize after vectors: perform Gram-Schmidt, but do not normalize
         var flag = false; // invariant
         var k = 1;
-		var loop_counter = 0;
+        var loop_counter = 0;
 
         while (k < this.dimensions && !flag) { // I added this "flag" variable to prevent getting exceptions and terminate the loop gracefully
             for (var j = k - 1; j >= 0; j--) {
                 if (Math.abs(this.mu(k, j)) > 0.5) {
                     var to_subtract = tools.multiply(Math.round(this.mu(k, j)), this.matrix_before[j], this.dimensions);
-					
-					this.matrix_before_before = this.matrix_before;	// hold previous value of {b} to prevent infinite loop
+                    
+                    this.matrix_before_before = this.matrix_before; // hold previous value of {b} to prevent infinite loop
                     this.matrix_before[k] = tools.subtract(this.matrix_before[k], to_subtract, this.dimensions);
 
                     this.matrix_after = new gs(this.matrix_before, false).matrix; // update after vectors: perform Gram-Schmidt, but do not normalize
@@ -52,7 +52,7 @@ class LLL {
                 // console.log("if; k, j");
                 // console.log(k + ", " + j);
             } else {
-				this.matrix_before_before = this.matrix_before;	// hold previous value of {b} to prevent infinite loop
+                this.matrix_before_before = this.matrix_before; // hold previous value of {b} to prevent infinite loop
                 var temp_matrix = this.matrix_before[k];
                 this.matrix_before[k] = this.matrix_before[k - 1];
                 this.matrix_before[k - 1] = temp_matrix;
@@ -68,15 +68,15 @@ class LLL {
                 // console.log("else; k, j");
                 // console.log(k + ", " + j);
             }
-			
-			// this will prevent infinite loop
-			if(loop_counter > Math.pow(this.dimensions, this.dimensions + 1) || loop_counter + 1 === Number.MAX_SAFE_INTEGER) {
-				flag = true; // prevent infinite loop, nothing new is happening
-			}
-			
-			// console.log(this.matrix_before);
-			
-			loop_counter++;
+            
+            // this will prevent infinite loop
+            if(loop_counter > Math.pow(this.dimensions, this.dimensions + 1) || loop_counter + 1 === Number.MAX_SAFE_INTEGER) {
+                flag = true; // prevent infinite loop, nothing new is happening
+            }
+            
+            // console.log(this.matrix_before);
+            
+            loop_counter++;
         }
 
         console.log("final: ");
@@ -101,5 +101,5 @@ var lll = new LLL(
         [1, 3, 1, 0],
         [2, 2, 2, 6],
         [3, 1, 3, 5],
-		[3, 1, 3, 5]
+        [3, 1, 3, 5]
     ], 1);
