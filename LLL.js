@@ -6,10 +6,11 @@
 
 var gs = require("./Gram-Schmidt Orthogonalization.js");
 var tools = require("./tools.js");
+var mathjs = require("mathjs");
 
 class LLL {
 	constructor(matrix, delta) {
-		if (delta < 0.25 || delta > 1) {
+		if (delta < 0.25 || delta >= 1) {
 			throw "delta is out of range";
 		}
 
@@ -95,15 +96,23 @@ class LLL {
 	}
 }
 
-var matrix = [
-	[1, 1, 1],
-	[1, 2, 3],
-	[4, 5, 2]
-];
+
+
+var dimension = 10;
+
+var matrix = new Array(dimension);
+for (var i = 0; i < dimension; i++) {
+	matrix[i] = new Array(dimension);
+	for (var j = 0; j < dimension; j++) {
+		matrix[i][j] = Math.floor(Math.random() * 1000);
+	}
+}
+
+console.log(matrix);
 
 console.log("orthogonality defect before lattice reduction: " + tools.calculate_orthogonality_defect(matrix, matrix.length));
 
 // The following will run the LLL function
-var lll = new LLL(matrix, 1);
+var lll = new LLL(matrix, 0.99);
 
 console.log("orthogonality defect after lattice reduction: " + tools.calculate_orthogonality_defect(lll, matrix.length));

@@ -1,6 +1,8 @@
 "use strict";
 
 
+var mathjs = require("mathjs");
+
 // utility functions
 class tools {
 	// subtract two vectors (or arrays)
@@ -103,7 +105,7 @@ class tools {
 			temp_value *= this.norm(Matrix[i], n);
 		}
 
-		return Math.abs(temp_value / this.calculate_determinant(Matrix, n));
+		return Math.abs(temp_value / mathjs.det(Matrix));
 	}
 }
 

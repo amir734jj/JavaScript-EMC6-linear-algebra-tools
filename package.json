@@ -1,0 +1,23 @@
+{
+  "name": "lll",
+  "version": "1.0.0",
+  "description": "To run the system, make sure you installed [nodejs](https://nodejs.org/), and then type the following in terminal (or cmd) in the folder of the code:",
+  "main": "Gram-Schmidt Orthogonalization.js",
+  "dependencies": {
+    "mathjs": "^3.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amir734jj/JavaScript_EMC6_linear_algebra_tools.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amir734jj/JavaScript_EMC6_linear_algebra_tools/issues"
+  },
+  "homepage": "https://github.com/amir734jj/JavaScript_EMC6_linear_algebra_tools#readme"
+}
